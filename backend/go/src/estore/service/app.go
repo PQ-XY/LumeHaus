@@ -7,6 +7,7 @@ import (
 	"reflect"
 
 	"estore/constants"
+	"estore/util"
 	"estore/internal"
 	"estore/model"
 
@@ -85,7 +86,12 @@ func getAppFromSearchResult(searchResult *elastic.SearchResult) []model.App {
 }
 
 func SaveApp(app *model.App, file multipart.File) error {
-	productID, priceID, err := internal.CreateProductWithPrice(app.Title, app.Description, int64(app.Price*100))
+	config, err := util.LoadApplicationConfig("conf", "deploy.yml")
+    if err != nil {
+        panic(err)
+    }
+
+	productID, priceID, err := internal.CreateProductWithPrice(config.StripeConfig, app.Title, app.Description, int64(app.Price*100))
 	if err != nil {
 		fmt.Printf("Failed to create Product and Price using Stripe SDK %v\n", err)
 		return err
@@ -111,6 +117,10 @@ func SaveApp(app *model.App, file multipart.File) error {
 }
 
 func CheckoutApp(domain string, appID string) (*stripe.CheckoutSession, error) {
+	config, err := util.LoadApplicationConfig("conf", "deploy.yml")
+    if err != nil {
+        panic(err)
+    }
 	app, err := SearchAppsByID(appID)
 	if err != nil {
 		return nil, err
@@ -118,7 +128,7 @@ func CheckoutApp(domain string, appID string) (*stripe.CheckoutSession, error) {
 	if app == nil {
 		return nil, errors.New("unable to find app in elasticsearch")
 	}
-	return internal.CreateCheckoutSession(domain, app.PriceID)
+	return internal.CreateCheckoutSession(config.StripeConfig, domain, app.PriceID)
 }
 
 func DeleteApp(id string, user string) error {

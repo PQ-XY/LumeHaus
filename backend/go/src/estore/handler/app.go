@@ -9,7 +9,7 @@ import (
 	"estore/model"
 	"estore/service"
 
-	"github.com/gorilla/mux"  
+	"github.com/gorilla/mux"
 
 	jwt "github.com/form3tech-oss/jwt-go"
 
@@ -21,9 +21,8 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Received one upload request")
 
 	user := r.Context().Value("user")
-  	claims := user.(*jwt.Token).Claims
-   	username := claims.(jwt.MapClaims)["username"]
-
+	claims := user.(*jwt.Token).Claims
+	username := claims.(jwt.MapClaims)["username"]
 
 	app := model.App{
 		Id:          uuid.New(),
@@ -98,17 +97,17 @@ func checkoutHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteHandler(w http.ResponseWriter, r *http.Request) {
-    fmt.Println("Received one request for delete")
+	fmt.Println("Received one request for delete")
 
-    user := r.Context().Value("user")
-    claims := user.(*jwt.Token).Claims
-    username := claims.(jwt.MapClaims)["username"].(string)
-    id := mux.Vars(r)["id"]
+	user := r.Context().Value("user")
+	claims := user.(*jwt.Token).Claims
+	username := claims.(jwt.MapClaims)["username"].(string)
+	id := mux.Vars(r)["id"]
 
-    if err := service.DeleteApp(id, username); err != nil {
-        http.Error(w, "Failed to delete app from backend", http.StatusInternalServerError)
-        fmt.Printf("Failed to delete app from backend %v\n", err)
-        return
-    }
-    fmt.Println("App is deleted successfully")
+	if err := service.DeleteApp(id, username); err != nil {
+		http.Error(w, "Failed to delete app from backend", http.StatusInternalServerError)
+		fmt.Printf("Failed to delete app from backend %v\n", err)
+		return
+	}
+	fmt.Println("App is deleted successfully")
 }

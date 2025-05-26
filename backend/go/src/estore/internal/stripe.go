@@ -1,8 +1,9 @@
 package internal
 
 import (
-   "estore/constants"
    "fmt"
+
+   "estore/util"
 
    "github.com/stripe/stripe-go/v74"
    "github.com/stripe/stripe-go/v74/price"
@@ -10,8 +11,8 @@ import (
    "github.com/stripe/stripe-go/v74/checkout/session"
 )
 
-func CreateProductWithPrice(appTitle string, appDescription string, appPrice int64) (productID, priceID string, err error) {
-   stripe.Key = constants.STRIPE_API_KEY
+func CreateProductWithPrice(config *util.StripeInfo, appTitle string, appDescription string, appPrice int64) (productID, priceID string, err error) {
+   stripe.Key = config.APIKey
    product_params := &stripe.ProductParams{
        Name:        &appTitle,
        Description: &appDescription,
@@ -39,8 +40,8 @@ func CreateProductWithPrice(appTitle string, appDescription string, appPrice int
    return newProduct.ID, newPrice.ID, nil
 }
 
-func CreateCheckoutSession(domain string, priceID string) (*stripe.CheckoutSession, error) {
-   stripe.Key = constants.STRIPE_API_KEY
+func CreateCheckoutSession(config *util.StripeInfo, domain string, priceID string) (*stripe.CheckoutSession, error) {
+   stripe.Key = config.APIKey
    params := &stripe.CheckoutSessionParams{
        LineItems: []*stripe.CheckoutSessionLineItemParams{
           {
