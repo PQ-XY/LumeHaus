@@ -2,12 +2,15 @@ package service
 
 import (
     "reflect"
+	"fmt"
+	"errors"
 
     "estore/internal"
     "estore/constants"
     "estore/model"
 
     "github.com/olivere/elastic/v7"
+	"github.com/stripe/stripe-go/v74"
 )
 
 
@@ -85,4 +88,27 @@ func getAppFromSearchResult(searchResult *elastic.SearchResult) []model.App {
        apps = append(apps, p)
    }
    return apps
+}
+
+func SaveApp(app *model.App) error {
+   productID, priceID, err := internal.CreateProductWithPrice(app.Title, app.Description, int64(app.Price*100))
+   if err != nil {
+       fmt.Printf("Failed to create Product and Price using Stripe SDK %v\n", err)
+       return err
+   }
+   app.ProductID = productID
+   	   app.PriceID = priceID
+   fmt.Printf("Product %s with price %s is successfully created", productID, priceID)
+   return nil
+}
+
+func CheckoutApp(domain string, appID string) (*stripe.CheckoutSession, error) {
+   app, err := SearchAppsByID(appID)
+   if err != nil {
+       return nil, err
+   }
+   if app == nil {
+       return nil, errors.New("unable to find app in elasticsearch")
+   }
+   return internal.CreateCheckoutSession(domain, app.PriceID)
 }
