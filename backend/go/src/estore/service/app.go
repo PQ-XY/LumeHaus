@@ -120,3 +120,11 @@ func CheckoutApp(domain string, appID string) (*stripe.CheckoutSession, error) {
 	}
 	return internal.CreateCheckoutSession(domain, app.PriceID)
 }
+
+func DeleteApp(id string, user string) error {
+    query := elastic.NewBoolQuery()
+    query.Must(elastic.NewTermQuery("id", id))
+    query.Must(elastic.NewTermQuery("user", user))
+
+    return internal.ESBackend.DeleteFromES(query, constants.APP_INDEX)
+}
