@@ -12,7 +12,7 @@ import {
 } from "antd";
 import { useEffect, useState } from "react";
 import { searchApps, checkout } from "../utils";
-// import PostApps from "./PostApps";
+import PostApps from "./PostApps";
 
 const { TabPane } = Tabs;
 const { Text } = Typography;
@@ -103,7 +103,7 @@ const HomePage = () => {
         <BrowseApps />
       </TabPane>
       <TabPane tab="Post Apps" key="2">
-        {/* <PostApps /> */}
+        <PostApps />
       </TabPane>
     </Tabs>
   );

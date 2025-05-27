@@ -1,8 +1,8 @@
-import { Layout, Dropdown, Menu, Button } from "antd";
+import { Layout, Dropdown, Menu, Button, message } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
-// import LoginForm from "./components/LoginForm";
-// import HomePage from "./components/HomePage";
+import LoginForm from "./components/LoginForm";
+import HomePage from "./components/HomePage";
 
 const { Header, Content } = Layout;
 
@@ -12,6 +12,15 @@ const App = () => {
   useEffect(() => {
     const authToken = localStorage.getItem("authToken");
     setAuthed(authToken !== null);
+  }, []);
+
+  useEffect(() => {
+    // Check to see if this is a redirect back from Checkout
+    const query = new URLSearchParams(window.location.search);
+
+    if (query.get("success")) {
+      message.success("Order placed!");
+    }
   }, []);
 
   const handleLoginSuccess = () => {
@@ -32,7 +41,7 @@ const App = () => {
       return <LoginForm onLoginSuccess={handleLoginSuccess} />;
     }
 
-    // return <HomePage />;
+    return <HomePage />;
   };
 
   const userMenu = (
