@@ -1,0 +1,21 @@
+FROM golang:1.24.3
+LABEL maintainer="yaoxu369@gmail.com"
+
+
+WORKDIR /go/src/estore
+ADD . / /go/src/estore/
+
+
+RUN go get cloud.google.com/go/storage
+RUN go get github.com/auth0/go-jwt-middleware
+RUN go get github.com/form3tech-oss/jwt-go
+RUN go get github.com/gorilla/handlers
+RUN go get github.com/gorilla/mux
+RUN go get github.com/olivere/elastic/v7
+RUN go get github.com/stripe/stripe-go/v74
+RUN go get github.com/pborman/uuid
+RUN go get gopkg.in/yaml.v2
+
+
+EXPOSE 8080
+CMD ["/usr/local/go/bin/go", "run", "main.go"]
