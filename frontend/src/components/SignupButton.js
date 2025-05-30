@@ -41,7 +41,7 @@ const SignupButton = () => {
       </Button>
       <Modal
         title="Sign Up"
-        visible={modalVisible}
+        open={modalVisible}
         onCancel={handleModalCancel}
         footer={null}
       >

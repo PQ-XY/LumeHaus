@@ -1,4 +1,4 @@
-const domain = "https://eshop-460719.uc.r.appspot.com/";  // example: http://localhost:8080
+const domain = "https://appstore-461323.uk.r.appspot.com";  // example: http://localhost:8080
 
 const handleResponseStatus = (response, errMsg) => {
   const { status, ok } = response;

@@ -1,0 +1,10 @@
+elasticsearch:
+  address: "http://34.170.238.38:9200"
+  username: "yao"
+  password: "Yao87957585"
+
+gcs:
+  bucket: "eshop-bucket1"
+
+token:
+  secret: "secret"

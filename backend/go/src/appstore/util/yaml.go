@@ -1,10 +1,10 @@
 package util
 
 import (
-    "os"
-    "path/filepath"
+	"os"
+	"path/filepath"
 
-    "gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v2"
 )
 
 type ElasticsearchInfo struct {
@@ -29,7 +29,6 @@ type ApplicationConfig struct {
     ElasticsearchConfig *ElasticsearchInfo `yaml:"elasticsearch"`
     GCSConfig           *GCSInfo           `yaml:"gcs"`
     TokenConfig         *TokenInfo         `yaml:"token"`
-	StripeConfig        *StripeInfo        `yaml:"stripe"`
 }
 
 func LoadApplicationConfig(configDir, configFile string) (*ApplicationConfig, error) {

@@ -6,18 +6,38 @@ import (
 	"net/http"
 	"strconv"
 
-	"estore/model"
-	"estore/service"
+	"appstore/model"
+	"appstore/service"
 
-	"github.com/gorilla/mux"
+	"github.com/pborman/uuid"
 
 	jwt "github.com/form3tech-oss/jwt-go"
 
-	"github.com/pborman/uuid"
+	"github.com/gorilla/mux"
 )
+
+// 建立返回通道， 返回到前端
+func checkoutHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Received one checkout request")
+	w.Header().Set("Content-Type", "text/plain")
+
+	appID := r.FormValue("appID")
+	s, err := service.CheckoutApp(r.Header.Get("Origin"), appID)
+	if err != nil {
+		fmt.Println("Checkout failed.")
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(s.URL))
+
+	fmt.Println("Checkout process started!")
+}
 
 func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	// Parse from body of request to get a json object.
+	fmt.Println("Received one upload request")
 	fmt.Println("Received one upload request")
 
 	user := r.Context().Value("user")
@@ -30,6 +50,7 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 		Title:       r.FormValue("title"),
 		Description: r.FormValue("description"),
 	}
+
 	price, err := strconv.ParseFloat(r.FormValue("price"), 64)
 	fmt.Printf("%v,%T", price, price)
 	if err != nil {
@@ -53,7 +74,7 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("App is saved successfully.")
 
-	fmt.Fprintf(w, "App is saved successfully: %s\n", app.Description)
+	fmt.Fprintf(w, "Upload request received: %s\n", app.Description)
 }
 
 func searchHandler(w http.ResponseWriter, r *http.Request) {
@@ -76,24 +97,6 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Write(js)
-}
-
-func checkoutHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Received one checkout request")
-	w.Header().Set("Content-Type", "text/plain")
-
-	appID := r.FormValue("appID")
-	s, err := service.CheckoutApp(r.Header.Get("Origin"), appID)
-	if err != nil {
-		fmt.Println("Checkout failed.")
-		w.Write([]byte(err.Error()))
-		return
-	}
-
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(s.URL))
-
-	fmt.Println("Checkout process started!")
 }
 
 func deleteHandler(w http.ResponseWriter, r *http.Request) {
